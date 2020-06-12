@@ -29,8 +29,10 @@ class MainActivity : AppCompatActivity() {
 
 
     val CITY: String = "SEOUL,KR"
-    val API: String = "ad1c66073cdf5965cbd6986e778735fd"
+    val API: String = "f4788fe2452a8792808ef8a838e16dea"
     val PERMISSION_ID = 42
+    val LAT = 37.34
+    val LON = 126.94
     lateinit var mFusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -134,8 +136,8 @@ class MainActivity : AppCompatActivity() {
         override fun doInBackground(vararg params: String?): String? {
             var response:String?
             try{
-                response = URL("https://api.openweathermap.org/data/2.5/weather?q=$CITY&units=metric&appid=$API").readText(
-                        Charsets.UTF_8
+                response = URL("https://api.openweathermap.org/data/2.5/weather?lat=$LAT&lon=$LON&units=metric&appid=$API").readText(
+                    Charsets.UTF_8
                 )
             }catch (e: Exception){
                 response = null
