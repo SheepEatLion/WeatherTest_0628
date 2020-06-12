@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/detailsContainer"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="30dp"
             android:orientation="vertical">
 
             <TextView
@@ -100,17 +100,17 @@
                     <ImageView
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:src="@drawable/pressure"
+                        android:src="@drawable/temp"
                         android:tint="#FFFFFF"
-                        app:srcCompat="@drawable/wind" />
+                        app:srcCompat="@drawable/temp" />
                     <Space android:layout_width="wrap_content" android:layout_height="5dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="wind"
+                        android:text="체감온도"
                         android:textSize="12dp" />
-                    <TextView android:id="@+id/wind" android:layout_width="wrap_content"
+                    <TextView android:id="@+id/feels_like" android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:textSize="14dp"
                         android:text="06:40 AM"/>
                 </LinearLayout>
@@ -123,7 +123,7 @@
                         android:src="@drawable/humidity" android:tint="#FFFFFF"/>
                     <Space android:layout_width="wrap_content" android:layout_height="5dp"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:textSize="12dp" android:text="Humidity"/>
+                        android:textSize="12dp" android:text="습도"/>
                     <TextView android:id="@+id/humidity" android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:textSize="14dp"
                         android:text="06:40 AM"/>
@@ -140,7 +140,7 @@
                         android:textSize="12dp" android:text="Created By"/>
                     <TextView android:id="@+id/about" android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:textSize="14dp"
-                        android:text="Kotlin Project"/>
+                        android:text="코틀린 프로젝트"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

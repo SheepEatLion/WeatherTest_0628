@@ -162,16 +162,15 @@ class MainActivity : AppCompatActivity() {
                 val jsonObj = JSONObject(result)
                 val main = jsonObj.getJSONObject("main")
                 val sys = jsonObj.getJSONObject("sys")
-                val wind = jsonObj.getJSONObject("wind")
                 val weather = jsonObj.getJSONArray("weather").getJSONObject(0)
 
                 val updatedAt:Long = jsonObj.getLong("dt")
                 val updatedAtText = "Updated at: "+ SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.KOREA).format(Date(updatedAt*1000))
                 val temp = main.getString("temp")+"°C"
-                val tempMin = "Min Temp: " + main.getString("temp_min")+"°C"
-                val tempMax = "Max Temp: " + main.getString("temp_max")+"°C"
-                val humidity = main.getString("humidity")
-                val windSpeed = wind.getString("speed")
+                val tempMin = "최저 온도: " + main.getString("temp_min")+"°C"
+                val tempMax = "최고 온도: " + main.getString("temp_max")+"°C"
+                val feels_Like = main.getString("feels_like")+"°C"
+                val humidity = main.getString("humidity")+"%"
                 val weatherDescription = weather.getString("description")
 
                 val address = jsonObj.getString("name")+", "+sys.getString("country")
@@ -183,7 +182,7 @@ class MainActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.temp).text = temp
                 findViewById<TextView>(R.id.temp_min).text = tempMin
                 findViewById<TextView>(R.id.temp_max).text = tempMax
-                findViewById<TextView>(R.id.wind).text = windSpeed
+                findViewById<TextView>(R.id.feels_like).text = feels_Like
                 findViewById<TextView>(R.id.humidity).text = humidity
 
                 /* Views populated, Hiding the loader, Showing the main design */
