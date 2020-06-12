@@ -15,11 +15,20 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.provider.Settings
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONObject
 import com.google.android.gms.location.*
+import com.google.gson.JsonObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Query
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,12 +36,11 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
 
-
-    val CITY: String = "SEOUL,KR"
+    var BaseUrl = "http://api.openweathermap.org/"
     val API: String = "f4788fe2452a8792808ef8a838e16dea"
     val PERMISSION_ID = 42
-    val LAT = 37.34
-    val LON = 126.94
+    var LAT = 37.34
+    var LON = 126.94
     lateinit var mFusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,8 +63,8 @@ class MainActivity : AppCompatActivity() {
                     if (location == null) {
                         requestNewLocationData()
                     } else {
-                        findViewById<TextView>(R.id.latTextView).text = location.latitude.toString()
-                        findViewById<TextView>(R.id.lonTextView).text = location.longitude.toString()
+                        var lat = location.latitude.toString()
+                        var lon = location.longitude.toString()
                     }
                 }
             } else {
@@ -134,6 +142,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun doInBackground(vararg params: String?): String? {
+
             var response:String?
             try{
                 response = URL("https://api.openweathermap.org/data/2.5/weather?lat=$LAT&lon=$LON&units=metric&appid=$API").readText(
@@ -144,6 +153,7 @@ class MainActivity : AppCompatActivity() {
             }
             return response
         }
+
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
