@@ -7,64 +7,60 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
-import androidx.core.app.ActivityCompat
+import android.net.wifi.WifiManager
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Looper
+import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
-import android.provider.Settings
-import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import org.json.JSONObject
+import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
-import com.google.gson.JsonObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Query
+import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONObject
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-
-    var BaseUrl = "http://api.openweathermap.org/"
     val API: String = "f4788fe2452a8792808ef8a838e16dea"
     val PERMISSION_ID = 42
-    var LAT = 37.34
-    var LON = 126.94
+
+    companion object {
+        var lon = "37.34"
+        var lat = "126.94"
+    }
+
     lateinit var mFusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         getLastLocation()
         weatherTask().execute()
-
     }
 
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
-
                 mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
                     var location: Location? = task.result
                     if (location == null) {
                         requestNewLocationData()
                     } else {
-                        var lat = location.latitude.toString()
-                        var lon = location.longitude.toString()
+                        MainActivity.lat = location.latitude.toString()
+                        MainActivity.lon = location.longitude.toString()
                     }
                 }
             } else {
@@ -95,8 +91,8 @@ class MainActivity : AppCompatActivity() {
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             var mLastLocation: Location = locationResult.lastLocation
-            findViewById<TextView>(R.id.latTextView).text = mLastLocation.latitude.toString()
-            findViewById<TextView>(R.id.lonTextView).text = mLastLocation.longitude.toString()
+            MainActivity.lat = mLastLocation.latitude.toString()
+            MainActivity.lon = mLastLocation.longitude.toString()
         }
     }
 
@@ -123,7 +119,6 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == PERMISSION_ID) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
@@ -145,7 +140,9 @@ class MainActivity : AppCompatActivity() {
 
             var response:String?
             try{
-                response = URL("https://api.openweathermap.org/data/2.5/weather?lat=$LAT&lon=$LON&units=metric&appid=$API").readText(
+                var lat = MainActivity.lat
+                var lon = MainActivity.lon
+                response = URL("https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&units=metric&appid=$API&lang=kr").readText(
                     Charsets.UTF_8
                 )
             }catch (e: Exception){
@@ -153,7 +150,6 @@ class MainActivity : AppCompatActivity() {
             }
             return response
         }
-
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
@@ -193,7 +189,6 @@ class MainActivity : AppCompatActivity() {
                 findViewById<ProgressBar>(R.id.loader).visibility = View.GONE
                 findViewById<TextView>(R.id.errorText).visibility = View.VISIBLE
             }
-
         }
     }
 }
