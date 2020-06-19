@@ -11,6 +11,23 @@
         android:layout_height="match_parent" android:visibility="visible">
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="294dp"
+            android:layout_above="@+id/overviewContainer"
+            android:layout_below="@+id/addressContainer"
+            android:layout_marginTop="33dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginBottom="8dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/addressContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,8 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/detailsContainer"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical">
 
             <TextView
@@ -57,7 +73,7 @@
                 android:layout_gravity="center"
                 android:fontFamily="sans-serif-thin"
                 android:text="29°C"
-                android:textSize="90dp" />
+                android:textSize="80dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -83,7 +99,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
 
         <LinearLayout android:id="@+id/detailsContainer" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical"
@@ -153,14 +168,20 @@
             </LinearLayout>
         </LinearLayout>
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_above="@+id/overviewContainer"
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="161dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/addressContainer"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="20dp" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="57dp"
+            android:text="오늘의 추천 음식"
+            android:textAlignment="center"
+            android:textSize="18sp" />
 
     </RelativeLayout>
 
