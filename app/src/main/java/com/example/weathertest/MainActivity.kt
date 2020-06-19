@@ -13,6 +13,8 @@ import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
@@ -20,8 +22,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.item_pager.*
 import org.json.JSONObject
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -35,6 +39,9 @@ class MainActivity : AppCompatActivity() {
     companion object {
         var lon = "37.34"
         var lat = "126.94"
+        private const val MENU_ID_RECYCLER_ADAPTER = 100
+        private const val MENU_ID_FRAGMENT_ADAPTER = 101
+        private const val MENU_ID_ADD_ITEM = 103
     }
 
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -43,11 +50,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         getLastLocation()
         weatherTask().execute()
+
+        pager.adapter = PagerRecyclerAdapter(MenuData.values())
+        pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                Toast.makeText(baseContext, "onPageSelected", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     @SuppressLint("MissingPermission")
@@ -71,6 +85,17 @@ class MainActivity : AppCompatActivity() {
         } else {
             requestPermissions()
         }
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.removeGroup(Menu.NONE)
+        if (pager.adapter is PagerRecyclerAdapter) {
+            menu?.add(Menu.NONE, MENU_ID_FRAGMENT_ADAPTER, Menu.NONE, "FragmentStateAdapter Vertical")
+        } else {
+            menu?.add(Menu.NONE, MENU_ID_RECYCLER_ADAPTER, Menu.NONE, "RecyclerViewAdapter Horizontal")
+        }
+        menu?.add(Menu.NONE, MENU_ID_ADD_ITEM, Menu.NONE, "Add New Item")
+        return super.onPrepareOptionsMenu(menu)
     }
 
     @SuppressLint("MissingPermission")
