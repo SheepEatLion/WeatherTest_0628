@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="25dp"
-    android:background="@drawable/bg_gradient">
+    android:background="@drawable/bg_gradient"
+    android:id="@+id/refresh">
 
     <RelativeLayout android:id="@+id/mainContainer" android:layout_width="match_parent"
         android:layout_height="match_parent" android:visibility="visible">
@@ -152,7 +154,9 @@
                         android:text="06:40 AM"/>
                 </LinearLayout>
                 <Space android:layout_width="10dp" android:layout_height="wrap_content"/>
-                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                <LinearLayout
+                    android:id="@+id/five_minute"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
                     android:orientation="vertical" android:layout_weight="1"
                     android:gravity="center" android:padding="8dp"
                     android:background="#3CF1EBF1">
@@ -160,10 +164,10 @@
                         android:src="@drawable/info" android:tint="#FFFFFF"/>
                     <Space android:layout_width="wrap_content" android:layout_height="5dp"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:textSize="12dp" android:text="Created By"/>
+                        android:textSize="12dp" android:text="5분거리에서"/>
                     <TextView android:id="@+id/about" android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:textSize="14dp"
-                        android:text="코틀린 프로젝트"/>
+                        android:text="찾아보기"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -208,5 +212,4 @@
         android:layout_height="wrap_content"
         android:text="Latitude: "
         android:textColor="#00FFFFFF" />
-
-</RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -7,14 +7,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
-import android.net.wifi.WifiManager
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
@@ -22,10 +19,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.item_pager.*
 import org.json.JSONObject
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -42,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         private const val MENU_ID_RECYCLER_ADAPTER = 100
         private const val MENU_ID_FRAGMENT_ADAPTER = 101
         private const val MENU_ID_ADD_ITEM = 103
+
     }
 
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -50,18 +48,34 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        refresh.setOnRefreshListener {
+            refresh.isRefreshing = false
+        }
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         getLastLocation()
         weatherTask().execute()
+
+        // 여기에 when 사용해서 이미지 필터링 하는 코드 추가되어야함!!
+        // 필터링 후에 아래의 어댑터 연결 부분에서 MenuData.values() 말고
+        // 아예 필터링 된 이미지데이터셋을 넘겨 줄 예정.
 
         pager.adapter = PagerRecyclerAdapter(MenuData.values())
         pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                Toast.makeText(baseContext, "onPageSelected", Toast.LENGTH_SHORT).show()
+                Toast.makeText(baseContext, "Next", Toast.LENGTH_SHORT).show()
+
             }
         })
+//*********************************버튼 클릭으로 map activity 에 인텐트 전달하는 부분 ******
+        five_minute.setOnClickListener {
+            Toast.makeText(this, "주변 5분거리 검색창으로 이동!", Toast.LENGTH_LONG).show()
+            val intent:Intent = Intent(baseContext, MapsActivity::class.java)
+            startActivity(intent)
+        }
+//****************************************************************************************
     }
 
     @SuppressLint("MissingPermission")
@@ -73,8 +87,8 @@ class MainActivity : AppCompatActivity() {
                     if (location == null) {
                         requestNewLocationData()
                     } else {
-                        MainActivity.lat = location.latitude.toString()
-                        MainActivity.lon = location.longitude.toString()
+                        lat = location.latitude.toString()
+                        lon = location.longitude.toString()
                     }
                 }
             } else {
@@ -116,8 +130,8 @@ class MainActivity : AppCompatActivity() {
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             var mLastLocation: Location = locationResult.lastLocation
-            MainActivity.lat = mLastLocation.latitude.toString()
-            MainActivity.lon = mLastLocation.longitude.toString()
+            lat = mLastLocation.latitude.toString()
+            lon = mLastLocation.longitude.toString()
         }
     }
 
@@ -165,8 +179,8 @@ class MainActivity : AppCompatActivity() {
 
             var response:String?
             try{
-                var lat = MainActivity.lat
-                var lon = MainActivity.lon
+                var lat = lat
+                var lon = lon
                 response = URL("https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&units=metric&appid=$API&lang=kr").readText(
                     Charsets.UTF_8
                 )
@@ -186,7 +200,7 @@ class MainActivity : AppCompatActivity() {
                 val weather = jsonObj.getJSONArray("weather").getJSONObject(0)
 
                 val updatedAt:Long = jsonObj.getLong("dt")
-                val updatedAtText = "Updated at: "+ SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.KOREA).format(Date(updatedAt*1000))
+                val updatedAtText = "업데이트 시간: "+ SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.KOREA).format(Date(updatedAt*1000))
                 val temp = main.getString("temp")+"°C"
                 val tempMin = "최저 온도: " + main.getString("temp_min")+"°C"
                 val tempMax = "최고 온도: " + main.getString("temp_max")+"°C"
@@ -194,7 +208,19 @@ class MainActivity : AppCompatActivity() {
                 val humidity = main.getString("humidity")+"%"
                 val weatherDescription = weather.getString("description")
 
-                val address = jsonObj.getString("name")+", "+sys.getString("country")
+                var city_name = ""
+                if(jsonObj.getString("name") == "Seongnam-si"){
+                    city_name = "성남시"
+                }
+                else if(jsonObj.getString("name") == "Gunpo"){
+                    city_name = "군포시"
+                }
+                else if(jsonObj.getString("name") == "Seoul"){
+                    city_name = "서울"
+                }
+
+                val address = city_name
+                //val address = jsonObj.getString("name")+", "+sys.getString("country")
 
                 /* Populating extracted data into our views */
                 findViewById<TextView>(R.id.address).text = address
