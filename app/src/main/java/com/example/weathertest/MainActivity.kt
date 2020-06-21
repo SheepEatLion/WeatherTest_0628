@@ -49,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         refresh.setOnRefreshListener {
+            var intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
             refresh.isRefreshing = false
         }
 
