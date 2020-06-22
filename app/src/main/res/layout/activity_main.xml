@@ -14,19 +14,17 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="294dp"
+            android:layout_height="359dp"
             android:layout_above="@+id/overviewContainer"
             android:layout_below="@+id/addressContainer"
-            android:layout_marginTop="33dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="23dp"
+            android:layout_marginBottom="-2dp"
             android:orientation="vertical">
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="0dp"
-                android:layout_marginBottom="8dp" />
+                android:layout_height="match_parent" />
         </LinearLayout>
 
         <LinearLayout
