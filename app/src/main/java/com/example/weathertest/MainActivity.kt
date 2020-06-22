@@ -203,10 +203,12 @@ class MainActivity : AppCompatActivity() {
 
                 val updatedAt:Long = jsonObj.getLong("dt")
                 val updatedAtText = "업데이트 시간: "+ SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.KOREA).format(Date(updatedAt*1000))
-                val temp = main.getString("temp")+"°C"
+                val _temp = main.getString("temp")
+                val temp = Math.round(_temp.toDouble()).toString() + "°C"
                 val tempMin = "최저 온도: " + main.getString("temp_min")+"°C"
                 val tempMax = "최고 온도: " + main.getString("temp_max")+"°C"
-                val feelsLike = main.getString("feels_like")+"°C"
+                val _feelsLike = main.getString("feels_like")
+                val feelsLike = Math.round(_feelsLike.toDouble()).toString() + "°C"
                 val humidity = main.getString("humidity")+"%"
                 val weatherDescription = weather.getString("description")
 
