@@ -34,12 +34,12 @@ class MainActivity : AppCompatActivity() {
     val PERMISSION_ID = 42
 
     companion object {
-        var lon = "37.34"
-        var lat = "126.94"
+        var lon = 37.34
+        var lat = 126.94
         private const val MENU_ID_RECYCLER_ADAPTER = 100
         private const val MENU_ID_FRAGMENT_ADAPTER = 101
         private const val MENU_ID_ADD_ITEM = 103
-
+        var count = 0;
     }
 
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -47,10 +47,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        if(count == 0)
+            startActivity(Intent(this, MainActivity::class.java))
+        count++;
         refresh.setOnRefreshListener {
-            var intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            //var intent = Intent(this, MainActivity::class.java)
+            finish()
+            startActivity(Intent(this, MainActivity::class.java))
             refresh.isRefreshing = false
         }
 
@@ -67,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                Toast.makeText(baseContext, "Next", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(baseContext, "Next", Toast.LENGTH_SHORT).show()
 
             }
         })
@@ -89,8 +92,8 @@ class MainActivity : AppCompatActivity() {
                     if (location == null) {
                         requestNewLocationData()
                     } else {
-                        lat = location.latitude.toString()
-                        lon = location.longitude.toString()
+                        lat = location.latitude.toDouble()
+                        lon = location.longitude.toDouble()
                     }
                 }
             } else {
@@ -132,8 +135,8 @@ class MainActivity : AppCompatActivity() {
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             var mLastLocation: Location = locationResult.lastLocation
-            lat = mLastLocation.latitude.toString()
-            lon = mLastLocation.longitude.toString()
+            lat = mLastLocation.latitude.toDouble()
+            lon = mLastLocation.longitude.toDouble()
         }
     }
 
