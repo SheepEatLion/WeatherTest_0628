@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class PagerRecyclerAdapter(private val menuDatas: Array<MenuData>) : RecyclerView.Adapter<PagerViewHolder>() {
+class PagerRecyclerAdapter(private val menuDatas: MutableList<MenuData>) : RecyclerView.Adapter<PagerViewHolder>() {
 
     // 아이템 카운트
     override fun getItemCount(): Int = menuDatas.size

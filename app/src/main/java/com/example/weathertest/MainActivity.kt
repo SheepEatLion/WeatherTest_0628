@@ -11,6 +11,7 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.ProgressBar
@@ -36,6 +37,8 @@ class MainActivity : AppCompatActivity() {
     companion object {
         var lon = 37.34
         var lat = 126.94
+//        var _humidity = 33
+//        var _feels_like = 33
         private const val MENU_ID_RECYCLER_ADAPTER = 100
         private const val MENU_ID_FRAGMENT_ADAPTER = 101
         private const val MENU_ID_ADD_ITEM = 103
@@ -50,28 +53,23 @@ class MainActivity : AppCompatActivity() {
         if(count == 0)
             startActivity(Intent(this, MainActivity::class.java))
         count++;
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        getLastLocation()
+        weatherTask().execute()
         refresh.setOnRefreshListener {
             //var intent = Intent(this, MainActivity::class.java)
             finish()
             startActivity(Intent(this, MainActivity::class.java))
             refresh.isRefreshing = false
         }
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        getLastLocation()
-        weatherTask().execute()
-
-        // 여기에 when 사용해서 이미지 필터링 하는 코드 추가되어야함!!
-        // 필터링 후에 아래의 어댑터 연결 부분에서 MenuData.values() 말고
-        // 아예 필터링 된 이미지데이터셋을 넘겨 줄 예정.
-
-        pager.adapter = PagerRecyclerAdapter(MenuData.values())
+        val arrayList = mutableListOf<MenuData>()
+        pager.adapter = PagerRecyclerAdapter(arrayList)
         pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 //Toast.makeText(baseContext, "Next", Toast.LENGTH_SHORT).show()
-
             }
         })
 //*********************************버튼 클릭으로 map activity 에 인텐트 전달하는 부분 ******
@@ -208,8 +206,10 @@ class MainActivity : AppCompatActivity() {
                 val updatedAtText = "업데이트 시간: "+ SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.KOREA).format(Date(updatedAt*1000))
                 val _temp = main.getString("temp")
                 val temp = Math.round(_temp.toDouble()).toString() + "°C"
-                val tempMin = "최저 온도: " + main.getString("temp_min")+"°C"
-                val tempMax = "최고 온도: " + main.getString("temp_max")+"°C"
+                val _tempMin = main.getString("temp_min")
+                val tempMin = "최저 온도: " + Math.round(_tempMin.toDouble()).toString() + "°C"
+                val _tempMax = main.getString("temp_max")
+                val tempMax = "최고 온도: " + Math.round(_tempMax.toDouble()).toString() + "°C"
                 val _feelsLike = main.getString("feels_like")
                 val feelsLike = Math.round(_feelsLike.toDouble()).toString() + "°C"
                 val humidity = main.getString("humidity")+"%"
@@ -225,9 +225,9 @@ class MainActivity : AppCompatActivity() {
                 else if(jsonObj.getString("name") == "Seoul"){
                     city_name = "서울"
                 }
+                else jsonObj.getString("name")+", "+sys.getString("country")
 
                 val address = city_name
-                //val address = jsonObj.getString("name")+", "+sys.getString("country")
 
                 /* Populating extracted data into our views */
                 findViewById<TextView>(R.id.address).text = address
@@ -242,6 +242,38 @@ class MainActivity : AppCompatActivity() {
                 /* Views populated, Hiding the loader, Showing the main design */
                 findViewById<ProgressBar>(R.id.loader).visibility = View.GONE
                 findViewById<RelativeLayout>(R.id.mainContainer).visibility = View.VISIBLE
+
+                //=================
+
+                val __feelsLike = Math.round(_feelsLike.toDouble())
+                val __humidity = main.getString("humidity").toInt()
+
+                val arrayList = mutableListOf<MenuData>()
+                if(__feelsLike > 30) {
+                    arrayList.add(MenuData.MENU_6)
+                    arrayList.add(MenuData.MENU_7)
+                    arrayList.add(MenuData.MENU_8)
+                    arrayList.add(MenuData.MENU_9)
+                    arrayList.add(MenuData.MENU_10)
+                }
+                else if(__humidity > 70) {
+                    arrayList.add(MenuData.MENU_11)
+                    arrayList.add(MenuData.MENU_12)
+                    arrayList.add(MenuData.MENU_13)
+                    arrayList.add(MenuData.MENU_14)
+                    arrayList.add(MenuData.MENU_15)
+                }
+                else {
+                    arrayList.add(MenuData.MENU_1)
+                    arrayList.add(MenuData.MENU_2)
+                    arrayList.add(MenuData.MENU_3)
+                    arrayList.add(MenuData.MENU_4)
+                    arrayList.add(MenuData.MENU_5)
+                }
+                val randomlyPicked = mutableListOf<MenuData>()
+                randomlyPicked.add(arrayList.get((0 until arrayList.size).random()))
+                pager.adapter = PagerRecyclerAdapter(randomlyPicked)
+
 
             } catch (e: Exception) {
                 findViewById<ProgressBar>(R.id.loader).visibility = View.GONE
