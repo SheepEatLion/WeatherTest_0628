@@ -225,9 +225,10 @@ class MainActivity : AppCompatActivity() {
                 else if(jsonObj.getString("name") == "Seoul"){
                     city_name = "서울"
                 }
-                else jsonObj.getString("name")+", "+sys.getString("country")
-
-                val address = city_name
+                else {
+                    jsonObj.getString("name")+", "+sys.getString("country")
+                }
+                var address = city_name
 
                 /* Populating extracted data into our views */
                 findViewById<TextView>(R.id.address).text = address
@@ -242,8 +243,6 @@ class MainActivity : AppCompatActivity() {
                 /* Views populated, Hiding the loader, Showing the main design */
                 findViewById<ProgressBar>(R.id.loader).visibility = View.GONE
                 findViewById<RelativeLayout>(R.id.mainContainer).visibility = View.VISIBLE
-
-                //=================
 
                 val __feelsLike = Math.round(_feelsLike.toDouble())
                 val __humidity = main.getString("humidity").toInt()
@@ -271,6 +270,7 @@ class MainActivity : AppCompatActivity() {
                     arrayList.add(MenuData.MENU_5)
                 }
                 val randomlyPicked = mutableListOf<MenuData>()
+                randomlyPicked.add(arrayList.get((0 until arrayList.size).random()))
                 randomlyPicked.add(arrayList.get((0 until arrayList.size).random()))
                 pager.adapter = PagerRecyclerAdapter(randomlyPicked)
 
